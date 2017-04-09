@@ -1,4 +1,4 @@
-package com.programwithjava.collections;
+package programwithjava.collections;
 
 import java.awt.event.*;
 import java.util.*;

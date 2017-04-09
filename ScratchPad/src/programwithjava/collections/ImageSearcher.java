@@ -1,4 +1,4 @@
-package com.programwithjava.collections;
+package programwithjava.collections;
 
 import java.io.*;
 import java.util.*;

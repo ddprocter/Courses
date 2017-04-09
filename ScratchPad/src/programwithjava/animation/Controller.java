@@ -1,4 +1,4 @@
-package com.programwithjava.animation;
+package programwithjava.animation;
 
 import java.awt.event.*;
 import javax.swing.*;

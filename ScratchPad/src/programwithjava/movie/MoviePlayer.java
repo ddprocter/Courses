@@ -1,4 +1,4 @@
-package com.programwithjava.movie; 
+package programwithjava.movie; 
 
 import java.io.*;
 import java.awt.*;
