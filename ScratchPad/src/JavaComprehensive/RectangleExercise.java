@@ -1,3 +1,4 @@
+package JavaComprehensive;
 import java.awt.geom.*;
 
 public class RectangleExercise {

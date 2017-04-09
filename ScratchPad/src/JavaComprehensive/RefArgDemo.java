@@ -1,7 +1,8 @@
+package JavaComprehensive;
 public class RefArgDemo{
-	void modifyField(myClazz dupKey) {
+	void modifyField(MyClazz dupKey) {
 		dupKey.x = 101;
-		dupKey = new myClazz();
+		dupKey = new MyClazz();
 		dupKey.x=200;
 	}
 	

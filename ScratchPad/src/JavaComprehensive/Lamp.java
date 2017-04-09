@@ -1,4 +1,4 @@
-package newPackage;
+package JavaComprehensive;
 
 /**
  * The lamp class blah blah
