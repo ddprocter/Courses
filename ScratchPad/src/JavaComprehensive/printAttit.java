@@ -39,6 +39,8 @@ public class printAttit {
 	    return java.lang.Math.min(i,j);
 	    
 	}
+	
+}
 
 
 
