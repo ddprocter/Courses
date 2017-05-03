@@ -3,11 +3,11 @@ package programwithjava.animation;
 import java.awt.*;
 
 public abstract class Vehicle {	
-  protected float x = 30, y = 300; // vehicle's position
+  protected static float x = 30, y = 300; // vehicle's position
 
   // constructor updates x and y to specific values
   public Vehicle() {	
-    this(0, 0);
+    this(x, y);
   }
 
   // constructor updates x and y to values passed in as arguments
