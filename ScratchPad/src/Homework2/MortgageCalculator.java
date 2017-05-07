@@ -47,7 +47,7 @@ public class MortgageCalculator extends FinancialCalculator {
 				);
 		totalInterestPaid = monthlyPayment * numberOfPaymentsPerYear * term;
 		
-		System.out.printf("Total Interest Paid for the lifetime of this mortgage will be:\n%.2f", totalInterestPaid);
+		System.out.printf("Total Interest Paid for the lifetime of this mortgage will be:\n$%.2f", totalInterestPaid);
 
 	}
 

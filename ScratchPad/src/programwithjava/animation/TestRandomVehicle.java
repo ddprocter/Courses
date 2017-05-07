@@ -1,6 +1,7 @@
-package JavaComprehensive;
+package programwithjava.animation;
 
 import java.util.Random;
+import programwithjava.basic.DrawingKit;
 
 public class TestRandomVehicle {
 	
