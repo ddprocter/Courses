@@ -1,5 +1,7 @@
 package JavaComprehensive;
 
+import java.util.Arrays;
+
 public class TwoDimensionalArrays {
 
 	public TwoDimensionalArrays() {
@@ -24,6 +26,7 @@ public class TwoDimensionalArrays {
 			}
 			
 		}
+	
 		
 	}
 }
