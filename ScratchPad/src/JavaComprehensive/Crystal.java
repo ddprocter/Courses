@@ -20,8 +20,8 @@ public class Crystal {
 				horizontalSym = (grid[row][column] == grid[height - row][column]);
 				verticalSym = (grid[row][column] == grid[row][width-column]);
 				diagonal1Sym = (grid[row][column] == grid[column][row]);
-				diagonal2Sym = (grid[row][column] == grid[column][width - row]);
-				// NEED TO DO SOMETHING HERE FOR DIAGONAL WITH VARIABLE WIDTH/HEIGHT
+				diagonal2Sym = (grid[row][column] == grid[width-column][height - row]);
+			
 				
 				// check for false and exit before next iteration if false
 				if (!horizontalSym || !verticalSym || !diagonal1Sym || !diagonal2Sym){
