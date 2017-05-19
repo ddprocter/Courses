@@ -16,22 +16,26 @@ public class TransparencyChecker {
 		
 		// Source: 
 		// http://stackoverflow.com/questions/221830/set-bufferedimage-alpha-mask-in-java
+		// along with some other forum solutions 
 		// we will iterate over each RGB value and use the bitand to alter the alpha for each
 		int width = p.getWidth();
 		int[] imgData = new int[width];
 		int[] maskData = new int[width];
+		
+		  
 
 		for (int y = 0; y < p.getHeight(); y++) {
 		    // fetch a line of data from each image
 		    p.getRGB(0, y, width, 1, imgData, 0, 1); // populates imgData[] with rgb vals for the row
-		    p.getRGB(0, y, width, 1, maskData, 0, 1); // same
-		    // apply the mask
 		    for (int x = 0; x < width; x++) {
-		        int color = imgData[x] & 0x00FFFFFF; // mask away any alpha present
-		        int maskColor = (maskData[x] & 0x00FF0000) << 8; // shift red into alpha bits
-		        color |= maskColor;
-		        imgData[x] = color;
+		    		
+		    		imgData[x] = 0x7FFFFFFF  & imgData[x]; // set it to 50% transparency
+		    		// FF / 2 = 7F
+		    		// So we want to AND:
+		    		// 0x7F and any bit set in the rest of the 0xAARRGGBB string
+		    		
 		    }
+		        
 		    // replace the data
 		    p.setRGB(0, y, width, 1, imgData, 0, 1);
 		}
