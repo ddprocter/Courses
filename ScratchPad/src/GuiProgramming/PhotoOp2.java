@@ -3,7 +3,6 @@ package GuiProgramming;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -14,12 +13,14 @@ public class PhotoOp2 {
 	
 	private JFrame mainWindow, editWindow;
 	private PhotoOpDrawingPanel drawingPanel;
-	private JPanel topPanel, groupPanel, titlePanel, editTitlePanel, editPanel;
+	private JPanel topPanel, groupPanel, titlePanel, editPanel;
 	private JLabel titleLabel;
 	private JFileChooser chooser;
 	private String fileName;
-	private JCheckBox shearBox1;
-	private JCheckBox shearBox2;
+	private JFormattedTextField scaleField;
+	private JFormattedTextField rotateField;
+	private JTextField shearVertAmountField, shearHorizAmountField;
+	private int imageWidth, imageHeight;
 	
 	
 	public PhotoOp2(){
@@ -52,6 +53,11 @@ public class PhotoOp2 {
 		
 	}
 	
+	public void hideEditImageMenu(){
+		editWindow.setVisible(false);
+		
+	}
+	
 	public void selectFile(){
 		chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Select Photo files", "JPG", "JPEG");
@@ -62,10 +68,48 @@ public class PhotoOp2 {
 		if(returnVal == JFileChooser.APPROVE_OPTION){
 			File file = chooser.getSelectedFile();
 			fileName = file.getPath();
-			System.out.println(file.getPath()); // debug
-			Image image = new ImageIcon(file.getPath()).getImage();
+			Image image = new ImageIcon(file.getPath()).getImage();			
+			
+			// reset all this stuff before we load any new file
+			scaleField.setValue(100);
+			rotateField.setValue(0);
+			shearVertAmountField.setText("0");
+			shearHorizAmountField.setText("0");
+			
+			// load the file
 			drawingPanel.loadImage(image);
+			titleLabel.setText(fileName);
 		}
+		
+		
+	}
+	
+	public JPanel createScalePanel(){
+		
+		JPanel scalePanel = new JPanel();
+		JLabel scaleLabel = new JLabel("Scale:");
+		scaleField = new JFormattedTextField(new Float(100));
+		scaleField.setColumns(3);
+		JLabel percentLabel = new JLabel("%");
+		scalePanel.add(scaleLabel);
+		scalePanel.add(scaleField);
+		scalePanel.add(percentLabel);
+		scaleField.setToolTipText("Enter Scale in Percent");
+		scalePanel.setMaximumSize(new Dimension(200,40));
+		scalePanel.setBackground(Color.LIGHT_GRAY);
+		
+		scaleField.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e){
+				float scale = (Float) scaleField.getValue()/100.0f;
+				drawingPanel.scaleImage(scale);
+			}
+			
+		});
+				
+		
+		
+		
+		return scalePanel;
 		
 		
 	}
@@ -125,16 +169,19 @@ public class PhotoOp2 {
 	public JPanel createRotatePanel(){
 		JPanel rotatePanel = new JPanel();
 		JLabel rotateLabel = new JLabel("Set Rotation:");
-		JTextField rotateAmountField = new JTextField("Rotation", 10);
+		JLabel degreesLabel = new JLabel("degrees");
+		rotateField = new JFormattedTextField(new Integer(0));
+		rotateField.setColumns(4);
 		rotatePanel.add(rotateLabel);
-		rotatePanel.add(rotateAmountField);
-		rotateAmountField.setToolTipText("Enter the amount to rotate in degrees");
-		rotatePanel.setMaximumSize(new Dimension(200,100));
+		rotatePanel.add(rotateField);
+		rotatePanel.add(degreesLabel);
+		rotateField.setToolTipText("Enter the amount to rotate in degrees");
+		rotatePanel.setMaximumSize(new Dimension(200,70));
 		rotatePanel.setBackground(Color.lightGray);
 		
-		rotateAmountField.addActionListener(new ActionListener() {
+		rotateField.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
-				int degreesString = Integer.parseInt(rotateAmountField.getText());  
+				int degreesString = Integer.parseInt(rotateField.getText());  
 				drawingPanel.rotateImage(degreesString * Math.PI/180);
 			}
 			
@@ -148,16 +195,20 @@ public class PhotoOp2 {
 		
 		JPanel shearPanel = new JPanel();
 		shearPanel.setLayout(new BoxLayout(shearPanel, BoxLayout.Y_AXIS));
-		JLabel shearVertLabel = new JLabel("Set Vertical Shear: 1-10");
-		JTextField shearVertAmountField = new JTextField("0", 10);
+		
+		JLabel shearVertLabel = new JLabel("Set Vertical Shear:");
+		shearVertAmountField = new JTextField("0", 10);
 		shearPanel.add(shearVertLabel);
 		shearPanel.add(shearVertAmountField);
+		shearVertAmountField.setToolTipText("Enter Vertial Shear in Degrees");
 		
-		JLabel shearHorizLabel = new JLabel("Set Horiz Shear: 1-10");
-		JTextField shearHorizAmountField = new JTextField("0", 10);
+		JLabel shearHorizLabel = new JLabel("Set Horiz Shear:10");
+		shearHorizAmountField = new JTextField("0", 10);
 		shearPanel.add(shearHorizLabel);
 		shearPanel.add(shearHorizAmountField);
-		shearPanel.setMaximumSize(new Dimension(200, 100));// to do not showing 
+		shearHorizAmountField.setToolTipText("Enter Horizontal Shear in Degrees");
+		
+		shearPanel.setMaximumSize(new Dimension(200, 100));
 		
 		
 		shearVertAmountField.addActionListener(new ActionListener() {
@@ -236,9 +287,24 @@ public class PhotoOp2 {
 	
 	public void createEditWindowPanels(){
 		editPanel = new JPanel();
-		editPanel.setLayout(new BoxLayout(editPanel, BoxLayout.Y_AXIS));
+		//editPanel.setLayout(new BoxLayout(editPanel, BoxLayout.Y_AXIS));
+		editPanel.setMaximumSize(new Dimension(200,600));
+		editPanel.setBackground(Color.LIGHT_GRAY);
 		editPanel.add(createRotatePanel());
 		editPanel.add(createShearPanel());
+		editPanel.add(createScalePanel());
+		JButton hideButton = new JButton("Hide Edit Panel");
+		hideButton.setMaximumSize(new Dimension(40, 10));
+		editPanel.add(hideButton);
+		
+		hideButton.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				hideEditImageMenu();
+			}
+			
+		});
+		
+		
 		
 		
 		
@@ -269,7 +335,7 @@ public class PhotoOp2 {
 		groupPanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		groupPanel.setBackground(Color.lightGray);
 		
-		titleLabel = new JLabel(fileName);	
+		titleLabel = new JLabel();	
 		titlePanel.add(titleLabel);
 		
 	}

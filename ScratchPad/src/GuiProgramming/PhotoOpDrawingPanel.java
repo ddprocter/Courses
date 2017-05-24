@@ -13,6 +13,8 @@ public class PhotoOpDrawingPanel extends JPanel {
 	private float vShear = 0.0f;
 	private int XLoc = 0;
 	private int YLoc = 0;
+	private float scaleValue = 1.0f;
+	
 	
 
 	
@@ -25,7 +27,16 @@ public class PhotoOpDrawingPanel extends JPanel {
 		angle = 0.0;
 		XLoc = 0;
 		YLoc = 0;
+		hShear=0.0f;
+		vShear = 0.0f;
+		scaleValue = 1.0f;
 		repaint();
+	}
+	
+	public void scaleImage(float s){
+		scaleValue *= s;
+		repaint();
+		
 	}
 	
 	public void shearImage(float hshear, float vshear){
@@ -63,8 +74,9 @@ public class PhotoOpDrawingPanel extends JPanel {
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
-		g2.rotate(angle, 250, 250);
+		g2.rotate(angle, 250, 250); // to do - recenter around actual image center after shift location
 		g2.shear(hShear, vShear);
+		g2.scale(scaleValue, scaleValue);
 		g2.drawImage(bimage, XLoc, YLoc, null);
 	}
 }
