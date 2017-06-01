@@ -38,7 +38,7 @@ public class ArrayContainer {
 	
 
 	public static void main(String[] args) {
-		double[] seedArray =  {1,2,3,4,5,6,7,8,9};
+		double[] seedArray =  {1,2,3,4,5,6,7,8};
 		ArrayContainer container = new ArrayContainer(seedArray);
 		container.reverse(container.array);
 		
@@ -47,7 +47,18 @@ public class ArrayContainer {
 			
 		}
 		
+		System.out.println("Second method:");
 		
+		double[] seedArray2 =  {1,2,3,4,5,6,7,8};
+		ArrayContainer container2 = new ArrayContainer(seedArray2);
+		container2.reverse2(container2.array);
+		
+		for(int i = 0; i<container2.array.length; i++) {
+			System.out.println(container2.array[i]);
+			
+		}
+		System.out.println("Array2 Length:" + seedArray2.length);
+		System.out.println("Array2 Length/2:" + seedArray2.length/2);
 		
 
 	}
