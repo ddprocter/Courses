@@ -1,6 +1,7 @@
-package JavaComprehensive;
+package Collections;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
@@ -18,7 +19,16 @@ public class HashSetPractice {
 		movieTitles.add("The zzz Movie");
 		
 		
-		System.out.println(movieTitles);
+		
+		Iterator<String> iter = movieTitles.iterator();
+		while (iter.hasNext()) {
+			System.out.println(iter.next());
+			iter.remove();
+			System.out.println(movieTitles.size() + " movies left");
+		}
+		
+		System.out.println("Movietitles is empty now:");
+		System.out.println(movieTitles.size());
 		
 
 	}

@@ -2,7 +2,9 @@ package Collections;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.TreeSet;
 
 import programwithjava.collections.Photo;
@@ -22,6 +24,12 @@ public class PhotoFinder {
 		
 	}
 	
+	
+	
+	
+	
+	
+	
 	public void addPhoto(String name, Photo p){
 		nameToTagsMap.put(name,  p);
 		for (String tag : p.getTags()) {
@@ -38,7 +46,34 @@ public class PhotoFinder {
 		
 	}
 	
-	
+	public TreeSet<File> getPhotosContainingAllTags(Set<String> s) {
+		String tag;
+		TreeSet<File> photos = new TreeSet<File>();
+		Iterator<String> tagIterator = s.iterator();
+		while (tagIterator.hasNext() ) {
+			tag = tagIterator.next();
+			if (tagToNamesMap.containsKey(tag)){
+				if (photos.isEmpty()) {
+					// if empty, initialize
+					// but must use clone, otherwise 
+					// photos is permanently reference to = tagToNamesMap, 
+					// they are the same object
+					photos = (TreeSet<File>) tagToNamesMap.get(tag).clone();
+					
+				} else {
+					photos.retainAll(tagToNamesMap.get(tag));
+					// intersection of the two 
+				}
+			} else {
+				photos.clear();
+				// if any of the tags is not found, all the photos must be removed
+				break;
+			}
+		}
+		return photos;
+		
+		
+	}
 	
 	public LinkedHashSet<String> extractTags(String s){
 		int index = 0;

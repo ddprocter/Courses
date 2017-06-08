@@ -1,4 +1,4 @@
-package JavaComprehensive;
+package Collections;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
