@@ -13,26 +13,17 @@ import javax.swing.event.MenuListener;
 public class LifeTracker {
 	
 	public JFrame mainWindow, loginWindow;
+	private JTabbedPane tabbedPane;
+	private JPanel mainPanel;
 	private LifeTrackerReportingPanel reportingPanel;
 	private LifeTrackerConfigPanel configPanel;
 	private LifeTrackerEventPanel eventPanel;
 	private LifeTrackerLoginPanel loginPanel;
-	private JPanel mainPanel;
 	private User loggedInUser;
+	private JLabel statusText;
+	private UserTrackerMapController userTrackerMapController; 
 	
 	public LifeTracker(){
-		
-		mainWindow = new JFrame();
-		createMainWindowPanels();
-		
-		mainWindow.setContentPane(mainPanel);
-		// to do: dynamic logic, if you have no config, welcome message, etc. 
-		
-		mainWindow.setSize(1000,1000);
-		mainWindow.setTitle("Life Tracker v0");
-		mainWindow.setVisible(false);
-		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainWindow.setJMenuBar(createMenuBar());
 		
 		loginWindow = new JFrame();
 		loginPanel = new LifeTrackerLoginPanel(this);
@@ -44,79 +35,47 @@ public class LifeTracker {
 	
 	}
 	
-	public JMenuBar createMenuBar(){
+	public void initMainWindow(){
+		mainWindow = new JFrame();
+		userTrackerMapController = new UserTrackerMapController(loggedInUser);
 		
-		JMenuBar menuBar = new JMenuBar();
-		JMenu eventMenu = new JMenu("Track Events");
-		eventMenu.addMenuListener(new MenuListener() {
-			@Override
-	        public void menuSelected(MenuEvent e) {
-	            // show event tracker 
-
-	        }
-			@Override
-	        public void menuDeselected(MenuEvent e) {
-	            // do nothing
-	        }
-			@Override
-	        public void menuCanceled(MenuEvent e) {
-	            // do nothing
-	        }
-			
-		});
-		menuBar.add(eventMenu);
-		JMenu configMenu = new JMenu("Configure Trackers");
-		configMenu.addMenuListener(new MenuListener() {
-			@Override
-	        public void menuSelected(MenuEvent e) {
-	            // show config 
-
-	        }
-			@Override
-	        public void menuDeselected(MenuEvent e) {
-	            // do nothing
-	        }
-			@Override
-	        public void menuCanceled(MenuEvent e) {
-	            // do nothing
-	        }
-			
-		});
-		menuBar.add(configMenu);
-		JMenu reportMenu = new JMenu("Reporting");
-		reportMenu.addMenuListener(new MenuListener() {
-			@Override
-	        public void menuSelected(MenuEvent e) {
-	            // show report panel
-
-	        }
-			@Override
-	        public void menuDeselected(MenuEvent e) {
-	            // do nothing
-	        }
-			@Override
-	        public void menuCanceled(MenuEvent e) {
-	            // do nothing
-	        }
-			
-		});
-		menuBar.add(reportMenu);
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainWindow.add(mainPanel);
+		statusText = new JLabel();
+		mainPanel.add(Box.createVerticalStrut(10));
+		mainPanel.add(statusText);
+		mainPanel.add(Box.createVerticalStrut(10));
+		createTabbedPanels();
 		
-	
+		mainWindow.setContentPane(mainPanel);
+		// to do: dynamic logic, if you have no config, welcome message, etc. 
+		
+		mainWindow.setSize(1000,1000);
+		mainWindow.setTitle("Life Tracker v0");
+		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainWindow.setVisible(true);
 		
 		
-		return menuBar;
+		
 	}
 	
+	public void setStatusText(String text){
+		this.statusText.setText(text);
+	}
 	
-	
-	private void createMainWindowPanels() {
-		mainPanel = new JPanel();
-		configPanel = new LifeTrackerConfigPanel(loggedInUser);
-		eventPanel = new LifeTrackerEventPanel(loggedInUser);
-		reportingPanel = new LifeTrackerReportingPanel(loggedInUser);
-		mainPanel.add(configPanel);
+	private void createTabbedPanels() {
 		
+		tabbedPane = new JTabbedPane();
+		
+		configPanel = new LifeTrackerConfigPanel(this);
+		tabbedPane.addTab("Configure Trackers", null, configPanel, "Add and Remove Trackers");
+		eventPanel = new LifeTrackerEventPanel(loggedInUser);
+		tabbedPane.addTab("Log Events", null, eventPanel, "Track Stuff!");
+		reportingPanel = new LifeTrackerReportingPanel(loggedInUser);
+		tabbedPane.addTab("View Reports", null, reportingPanel, "View Reports");
+		
+		mainPanel.add(tabbedPane);
 		
 	}
 
@@ -126,9 +85,19 @@ public class LifeTracker {
 	}
 
 	
+	public User getLoggedInUser(){
+		return this.loggedInUser;
+	}
+	
 	public void setLoggedInUser(User user){
 		this.loggedInUser = user;
 		
+	}
+	
+
+	public UserTrackerMapController getUserTrackerMapContoller() {
+	
+		return userTrackerMapController;
 	}
 
 }

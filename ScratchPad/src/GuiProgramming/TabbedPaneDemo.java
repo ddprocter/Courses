@@ -80,7 +80,7 @@ public class TabbedPaneDemo extends JPanel {
         tabbedPane.setMnemonicAt(3, KeyEvent.VK_4);
          
         //Add the tabbed pane to this panel.
-        add(tabbedPane);
+        this.add(tabbedPane);
          
         //The following line enables to use scrolling tabs.
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);

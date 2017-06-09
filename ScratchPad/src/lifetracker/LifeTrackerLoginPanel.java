@@ -62,8 +62,9 @@ public class LifeTrackerLoginPanel extends JPanel {
 			success = user.login(userField.getText(), passwordField.getPassword());
 		
 		if (success == true) {
-			parent.setLoggedInUser(user);
-			parent.mainWindow.setVisible(true);
+			parent.setLoggedInUser(user);			
+			parent.initMainWindow();
+			parent.setStatusText("Successfully logged in user " + user.getUserLogin() + "! What would you like to do?");
 			parent.loginWindow.setVisible(false);
 			
 			

@@ -26,8 +26,8 @@ public class User {
 		this.password = password;
 		this.passwordString = new String(password);
 		System.out.println(passwordString);
-		
-		if (userLogin.equals("dprocter") && passwordString.equals("1234")) {
+		// to do: move to file based user/password login
+		if (userLogin.equals("d") && passwordString.equals("p")) {
 			this.isLoggedIn = true;
 			return true;
 		} else {
