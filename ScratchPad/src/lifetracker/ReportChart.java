@@ -42,9 +42,10 @@ public class ReportChart extends JPanel {
 	public ReportChart(Report report) {
         
 		this.report = report;
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.add(new LeftJustifiedPanelContainer("Tracker: " + report.getName()));
 		if (report.getStatus() == ReportStatusEnum.OK){
-			JLabel sectionTitle = new JLabel("Tracker: " + report.getName());
-			this.add(sectionTitle);
+			
 			ChartPanel chartPanel = (ChartPanel) createChartPanel(report);
 			chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 			this.add(chartPanel);
@@ -102,6 +103,7 @@ public class ReportChart extends JPanel {
 	    private static XYDataset createCountDataset(Report report) {
 
 	        TimeSeries ts = new TimeSeries(report.getName());
+	        
 	        LinkedHashMap<Date, Integer> data = report.getReportCountData(); 
 	        
 	        for (Map.Entry<Date, Integer> entry : data.entrySet()) {
@@ -133,8 +135,10 @@ public class ReportChart extends JPanel {
 	        for (Map.Entry<String, TokenCountsByDate<Date,Integer>> tokenStringEntry : data.entrySet()) {
 	        	// For each token string, get the counts by date, set on data series
 	        	// to do: can I fill in zero for dates without data? 
-	        	TimeSeries ts = new TimeSeries(report.getName());
+	        	
 	        	String token = tokenStringEntry.getKey();
+	        	
+	        	TimeSeries ts = new TimeSeries(token);
 	        	TokenCountsByDate<Date,Integer> tokenCountsByDate = tokenStringEntry.getValue();
 	        		for (Map.Entry<Date, Integer> dateEntry : tokenCountsByDate.entrySet() ) {
 	        			Calendar cal = Calendar.getInstance();

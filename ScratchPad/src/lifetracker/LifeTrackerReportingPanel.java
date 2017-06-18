@@ -17,9 +17,8 @@ public class LifeTrackerReportingPanel extends JPanel {
 	public LifeTrackerReportingPanel(LifeTracker parent) {
 		this.parent = parent;
 		this.userTrackers = parent.getUserTrackerMapContoller();
-		///this.setLayout(???);
-		JLabel reportingPanelTitle = new JLabel("Your Reports");
-		this.add(reportingPanelTitle);
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.add(new LeftJustifiedPanelContainer("Your Reports"));
 		refreshReports();
 		
 	}
@@ -45,6 +44,7 @@ public class LifeTrackerReportingPanel extends JPanel {
 
 	private void renderChart(Report report) {
 		ReportChart chart = new ReportChart(report);
+		
 		this.add(chart);
 		
 	}

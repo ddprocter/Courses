@@ -1,5 +1,8 @@
 package lifetracker;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
@@ -18,9 +21,9 @@ public class LifeTrackerEventPanel extends JPanel {
 		this.userTrackers = parent.getUserTrackerMapContoller();
 		this.user = parent.getLoggedInUser();
 		this.trackersPanel = new JPanel();
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS)); 
 		trackersPanel.setLayout(new BoxLayout(trackersPanel, BoxLayout.Y_AXIS));
-		JLabel eventPanelTitle = new JLabel("Your Trackers - Track Events");
-		this.add(eventPanelTitle);
+		this.add(new LeftJustifiedPanelContainer("Your Trackers - Track Stuff!"));
 		this.add(trackersPanel);
 		refreshTrackers();
 		
@@ -29,22 +32,22 @@ public class LifeTrackerEventPanel extends JPanel {
 	
 	public void refreshTrackers() {
 		
-		trackersPanel.removeAll();
-	
+		trackersPanel.removeAll();	
 		LinkedHashMap<String, Tracker> userTrackerMap = userTrackers.getUserTrackerMap();
-		
-		for ( Map.Entry<String,Tracker> entry : userTrackerMap.entrySet()) {
-		  
+		for ( Map.Entry<String,Tracker> entry : userTrackerMap.entrySet()) {	  
 			displayTrackerButton(entry.getValue());
-			
-		    
 		}	
 			
 		
 	}
 	
 	private void displayTrackerButton(Tracker tracker) {
-					
+			
+		JPanel row = new JPanel(new FlowLayout(FlowLayout.LEADING));
+		row.setMaximumSize(new Dimension(1000,50));
+		row.setMinimumSize(new Dimension(1000,50));
+		row.add(new JLabel("     "));
+		JLabel rowMessage = new JLabel("");
 		
 		switch (tracker.getType()) {
 			
@@ -56,30 +59,38 @@ public class LifeTrackerEventPanel extends JPanel {
 				countButton.setName(tracker.getName());
 			    countButton.addActionListener(new ActionListener() {
 			    	public void actionPerformed(ActionEvent e){
-			    		tracker.track(countField.getText());		    	}
-
+			    		tracker.track(countField.getText());
+			    		rowMessage.setText(countField.getText() + " Events Counted for " + tracker.getName());
+			    		countField.setText("Enter number");
+			    		parent.setStatusText("");
+			    	}
 
 			    });
-				trackersPanel.add(countField);
-				trackersPanel.add(countButton);
+				row.add(countField);
+				row.add(countButton);
 				break;
 				
 				
 			case ACTIONTRACKER:			
 				JTextField actionField = new JTextField(10);
-				actionField.setText("Enter number");
+				actionField.setText("Enter Words to Track");
 				// to do validate text, scrub tabs, scrub symbols
 				JButton actionButton = new JButton(tracker.getName());
 				actionButton.setName(tracker.getName());
 			    actionButton.addActionListener(new ActionListener() {
 			    	public void actionPerformed(ActionEvent e){
 			    		tracker.track("{" + actionField.getText() + "}");
+			    		rowMessage.setText(actionField.getText() + " Events Counted for " + tracker.getName());
+			    		actionField.setText("Enter Words to Track");
+			    		parent.setStatusText("");
+			    		
+			  
 			    	}
 
 
 			    });
-				trackersPanel.add(actionField);
-				trackersPanel.add(actionButton);
+				row.add(actionField);
+				row.add(actionButton);
 				break;
 				
 			case CLICKER:
@@ -88,15 +99,22 @@ public class LifeTrackerEventPanel extends JPanel {
 			    clickerButton.addActionListener(new ActionListener() {
 			    	public void actionPerformed(ActionEvent e){
 			    		tracker.track("1");
+			    		rowMessage.setText("1 Events Counted for " + tracker.getName());
+			    		parent.setStatusText("");
 			    	}
 
 
 			    });
-			    trackersPanel.add(clickerButton);
+			    row.add(new JLabel("                                "));
+			    row.add(clickerButton);
 			    break;
 			
 
 		}
+		row.add(rowMessage);
+		trackersPanel.add(Box.createVerticalStrut(20));
+		trackersPanel.add(row);
+		
 
 	    
 		

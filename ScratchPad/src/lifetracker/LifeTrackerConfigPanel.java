@@ -29,11 +29,7 @@ public class LifeTrackerConfigPanel extends JPanel {
 		userTrackers = parent.getUserTrackerMapContoller();
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		JPanel addTrackersLabelPanel = new JPanel( new FlowLayout(FlowLayout.LEADING));
-		JLabel addTrackersLabel = new JLabel("Add New Trackers");
-		addTrackersLabelPanel.setMaximumSize(new Dimension(1000,20));
-		addTrackersLabelPanel.add(addTrackersLabel);
-		this.add(addTrackersLabelPanel);
+		this.add(new LeftJustifiedPanelContainer("Add New Trackers"));
 		addConfigButtonsPanel();
 		addClickerTrackerButton();
 		addCountTrackerButton();
@@ -43,50 +39,15 @@ public class LifeTrackerConfigPanel extends JPanel {
 		
 	}
 	
-	public void addSaveButton(){
-		JButton saveButton = new JButton("Save Changes");
-		JPanel saveButtonPanel = new JPanel( new FlowLayout(FlowLayout.LEADING));
-		saveButtonPanel.setMinimumSize(new Dimension(1000,20));
-		saveButtonPanel.add(saveButton);
-		currentTrackersPanel.add(saveButtonPanel);
-		saveButton.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				boolean success;
-				if ( unsaved ) {
-					success = userTrackers.commit();
-					if (success){
-						saveStatusText.setText(" -- Changes Saved Successfully!");
-						parent.setStatusText("Changes Saved Successfully");
-					}
-					else { 
-						saveStatusText.setText( " -- Error saving changes") ;
-					}
-				}
-				else {
-					saveStatusText.setText(" -- No changes to save");
-				}
-				
-				
-			}
-			
-			
-		});
-		
-		
-	}
+	
 	
 	public void addCurrentTrackersPanel(){
 		
 		currentTrackersPanel = new JPanel();
 		currentTrackersPanel.setLayout(new BoxLayout(currentTrackersPanel, BoxLayout.Y_AXIS));
-		JPanel yourCurrentTrackersLabelPanel = new JPanel( new FlowLayout(FlowLayout.LEADING));
-		JLabel yourCurrentTrackers = new JLabel("Your Current Trackers");
-		yourCurrentTrackersLabelPanel.setMaximumSize(new Dimension(1000,20));
-		yourCurrentTrackersLabelPanel.add(yourCurrentTrackers);
-		yourCurrentTrackersLabelPanel.add(saveStatusText);
-		currentTrackersPanel.add(yourCurrentTrackersLabelPanel);
+		JPanel titleSectionLabelPanel = new LeftJustifiedPanelContainer("Your Current Trackers"); 
+		titleSectionLabelPanel.add(saveStatusText);
+		currentTrackersPanel.add(titleSectionLabelPanel);
 		currentTrackersPanel.add(Box.createVerticalStrut(5));
 		
 		trackers = new JPanel();
@@ -281,5 +242,38 @@ public class LifeTrackerConfigPanel extends JPanel {
 		
 	}
 	
+	public void addSaveButton(){
+		JButton saveButton = new JButton("Save Changes");
+		JPanel saveButtonPanel = new JPanel( new FlowLayout(FlowLayout.LEADING));
+		saveButtonPanel.setMinimumSize(new Dimension(1000,20));
+		saveButtonPanel.add(saveButton);
+		currentTrackersPanel.add(saveButtonPanel);
+		saveButton.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				boolean success;
+				if ( unsaved ) {
+					success = userTrackers.commit();
+					if (success){
+						saveStatusText.setText(" -- Changes Saved Successfully!");
+						parent.setStatusText("Changes Saved Successfully");
+					}
+					else { 
+						saveStatusText.setText( " -- Error saving changes") ;
+					}
+				}
+				else {
+					saveStatusText.setText(" -- No changes to save");
+				}
+				
+				
+			}
+			
+			
+		});
+		
+		
+	}
 
 }

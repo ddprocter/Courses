@@ -22,7 +22,7 @@ public class LifeTracker {
 	private LifeTrackerEventPanel eventPanel;
 	private LifeTrackerLoginPanel loginPanel;
 	private User loggedInUser;
-	private JLabel statusText;
+	private JLabel statusTextLabel;
 	private UserTrackerMapController userTrackerMapController; 
 	
 	public LifeTracker(){
@@ -44,9 +44,9 @@ public class LifeTracker {
 		mainPanel = new JPanel();
 		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 		mainWindow.add(mainPanel);
-		statusText = new JLabel();
+		statusTextLabel = new JLabel();
 		mainPanel.add(Box.createVerticalStrut(10));
-		mainPanel.add(statusText);
+		mainPanel.add(new LeftJustifiedPanelContainer(statusTextLabel));
 		mainPanel.add(Box.createVerticalStrut(10));
 		createTabbedPanels();
 		
@@ -63,12 +63,12 @@ public class LifeTracker {
 	}
 	
 	public void setStatusText(String text){
-		this.statusText.setText(text);
+		this.statusTextLabel.setText(text);
 	}
 	
 	private void createTabbedPanels() {
 		
-		tabbedPane = new JTabbedPane();
+		tabbedPane = new JTabbedPane( );
 		
 		configPanel = new LifeTrackerConfigPanel(this);
 		tabbedPane.addTab("Configure Trackers", null, configPanel, "Add and Remove Trackers");

@@ -159,9 +159,9 @@ public class Tracker implements Serializable {
 		
 	}
 	
-	public  void setType(TrackerEnum type){
-		this.type = type;
-	};
+	//public  void setType(TrackerEnum type){
+	//	this.type = type;
+	//};
 	
 	public TrackerEnum getType(){
 		return this.type;
@@ -193,7 +193,16 @@ public class Tracker implements Serializable {
 	}
 
 	public void deleteDataFile() {
-		// TODO Auto-generated method stub
+		File trackerFile = new File(filename);
+		if ( trackerFile.exists()) {
+			try {
+				trackerFile.delete();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+	
 		
 	}
 
