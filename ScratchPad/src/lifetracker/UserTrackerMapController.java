@@ -24,21 +24,21 @@ public class UserTrackerMapController {
 		userFile = new File(filename);
 		
 		if ( userFile.exists() && userFile.canRead() ) {
-			
+		// if there is already a tracker configuration for this user, fetch it	
 			try {
 				FileInputStream fileIn = new FileInputStream(filename);
 				ObjectInputStream objIn = new ObjectInputStream(fileIn);
 				userTrackerMap = (LinkedHashMap<String, Tracker>) objIn.readObject();
 				fileIn.close();
-				newFile = false;
+				//newFile = false; // don't think we need this
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
 			
 		} else {
 			userTrackerMap = new LinkedHashMap<String,Tracker>();
+			// otherwise we just create a new blank one
 		}
 	
 				
@@ -102,8 +102,15 @@ public class UserTrackerMapController {
 	
 	}
 
-	public void removeTracker(Tracker name){
-		userTrackerMap.remove(name);
+	public boolean removeTracker(String trackerName){
+		if ( userTrackerMap.containsKey(trackerName)) {
+			userTrackerMap.remove(trackerName);
+			return true;
+		} else {
+			return false;
+		}
+			
+		
 		
 	}
 }

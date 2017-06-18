@@ -1,6 +1,8 @@
 package lifetracker;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
 	
 	private String userLogin;
 	private char[] password;
@@ -25,7 +27,6 @@ public class User {
 		this.userLogin = user;
 		this.password = password;
 		this.passwordString = new String(password);
-		System.out.println(passwordString);
 		// to do: move to file based user/password login
 		if (userLogin.equals("d") && passwordString.equals("p")) {
 			this.isLoggedIn = true;

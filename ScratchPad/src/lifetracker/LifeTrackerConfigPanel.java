@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
@@ -16,9 +18,9 @@ public class LifeTrackerConfigPanel extends JPanel {
 	JTextField trackerNameField; 
 	private boolean unsaved = false;
 	JLabel saveStatusText = new JLabel();
-	JPanel configPanel;
+	JPanel configButtonsPanel;
 	JPanel currentTrackersPanel;
-	JTextArea trackers;
+	JPanel trackers;
 	
 
 	public LifeTrackerConfigPanel(LifeTracker parent) {
@@ -27,7 +29,12 @@ public class LifeTrackerConfigPanel extends JPanel {
 		userTrackers = parent.getUserTrackerMapContoller();
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		addConfigPanel();
+		JPanel addTrackersLabelPanel = new JPanel( new FlowLayout(FlowLayout.LEADING));
+		JLabel addTrackersLabel = new JLabel("Add New Trackers");
+		addTrackersLabelPanel.setMaximumSize(new Dimension(1000,20));
+		addTrackersLabelPanel.add(addTrackersLabel);
+		this.add(addTrackersLabelPanel);
+		addConfigButtonsPanel();
 		addClickerTrackerButton();
 		addCountTrackerButton();
 		addActionTrackerButton();
@@ -38,7 +45,10 @@ public class LifeTrackerConfigPanel extends JPanel {
 	
 	public void addSaveButton(){
 		JButton saveButton = new JButton("Save Changes");
-		currentTrackersPanel.add(saveButton);
+		JPanel saveButtonPanel = new JPanel( new FlowLayout(FlowLayout.LEADING));
+		saveButtonPanel.setMinimumSize(new Dimension(1000,20));
+		saveButtonPanel.add(saveButton);
+		currentTrackersPanel.add(saveButtonPanel);
 		saveButton.addActionListener(new ActionListener() {
 
 			@Override
@@ -46,13 +56,16 @@ public class LifeTrackerConfigPanel extends JPanel {
 				boolean success;
 				if ( unsaved ) {
 					success = userTrackers.commit();
-					if (success)
-						saveStatusText.setText("Changes Saved Successfully!");
-					else 
-						saveStatusText.setText( "Error saving changes") ; 
+					if (success){
+						saveStatusText.setText(" -- Changes Saved Successfully!");
+						parent.setStatusText("Changes Saved Successfully");
+					}
+					else { 
+						saveStatusText.setText( " -- Error saving changes") ;
+					}
 				}
 				else {
-					saveStatusText.setText("No changes to save");
+					saveStatusText.setText(" -- No changes to save");
 				}
 				
 				
@@ -68,12 +81,17 @@ public class LifeTrackerConfigPanel extends JPanel {
 		
 		currentTrackersPanel = new JPanel();
 		currentTrackersPanel.setLayout(new BoxLayout(currentTrackersPanel, BoxLayout.Y_AXIS));
-		currentTrackersPanel.setMaximumSize(new Dimension(1000,500));
-		currentTrackersPanel.add(new JLabel("Your Current Trackers"));
-		currentTrackersPanel.add(Box.createVerticalStrut(10));
-		currentTrackersPanel.add(saveStatusText);
-		trackers = new JTextArea();
-		trackers.setEditable(false);
+		JPanel yourCurrentTrackersLabelPanel = new JPanel( new FlowLayout(FlowLayout.LEADING));
+		JLabel yourCurrentTrackers = new JLabel("Your Current Trackers");
+		yourCurrentTrackersLabelPanel.setMaximumSize(new Dimension(1000,20));
+		yourCurrentTrackersLabelPanel.add(yourCurrentTrackers);
+		yourCurrentTrackersLabelPanel.add(saveStatusText);
+		currentTrackersPanel.add(yourCurrentTrackersLabelPanel);
+		currentTrackersPanel.add(Box.createVerticalStrut(5));
+		
+		trackers = new JPanel();
+		trackers.setLayout(new BoxLayout(trackers, BoxLayout.Y_AXIS));
+		trackers.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
 		listCurrentTrackers();
 		currentTrackersPanel.add(trackers);
@@ -84,32 +102,77 @@ public class LifeTrackerConfigPanel extends JPanel {
 	
 	public void listCurrentTrackers(){
 		
-		trackers.setText(null);
-		ArrayList<String> trackersList = userTrackers.getUserTrackerList();
-		Iterator<String> i = trackersList.iterator();
+		trackers.removeAll();
+		JPanel header = new JPanel();
+		header.setMaximumSize(new Dimension(1000,20));
+		header.setLayout(new GridLayout(1,3));
+		header.add(new JLabel("Tracker Name"));
+		header.add(new JLabel("Tracker Type"));
+		header.add(new JLabel("Actions"));
 		
-		while ( i.hasNext() ) {
-			String tracker = i.next();
-			trackers.append(tracker);
-			trackers.append("\n");
+		trackers.add(header);
 		
+		int rowcount = 1;
+		
+		LinkedHashMap<String, Tracker> trackersList = userTrackers.getUserTrackerMap();
+		for( Map.Entry<String,Tracker> entry : trackersList.entrySet()){
+			JPanel row = new JPanel();
+			row.setLayout(new GridLayout(1,3));
+			row.setMaximumSize(new Dimension(1000,20));
+			row.add(new JLabel(entry.getValue().getName())); // this is the friendly name with case, not the lowercase key
+			row.add(new JLabel(entry.getValue().getType().toString()));
+			JButton removeTrackerButton = new JButton("Remove Tracker");
+			String trackerName = entry.getKey();
+			removeTrackerButton.setName(trackerName); // key is lower case
+			removeTrackerButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					boolean success;		
+				
+					success = userTrackers.removeTracker(trackerName);
+					if ( success) { 
+						parent.setStatusText("Removed tracker " + entry.getValue().getName()); // friendly name here
+						unsaved = true;
+						
+						saveStatusText.setText(" -- You have unsaved changes");
+						trackerNameField.setText("Enter tracker name");
+						listCurrentTrackers();
+					}
+					else {
+						parent.setStatusText("Error - Could not remove " + entry.getValue().getName() );
+						listCurrentTrackers();
+					}
+				}
+				
+				
+			});
+			row.add(removeTrackerButton);
+			trackers.add(row);
+			
+			
+			  
+			  
 		}
+		
+		
 		
 	}
 	
-	public void addConfigPanel(){
+	public void addConfigButtonsPanel(){
 		
-		configPanel = new JPanel();
-		configPanel.setLayout(new BoxLayout(configPanel, BoxLayout.X_AXIS));
-		JLabel configLabel = new JLabel("Add a new Tracker");
-		configPanel.setMaximumSize(new Dimension(1000, 20));
-		configPanel.add(configLabel);
+		configButtonsPanel = new JPanel();
+		configButtonsPanel.setLayout(new BoxLayout(configButtonsPanel, BoxLayout.X_AXIS));
+		configButtonsPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		
+		configButtonsPanel.setMaximumSize(new Dimension(1000, 40));
+		
 		trackerNameField = new JFormattedTextField(createFormatter("******************"));
 		trackerNameField.setMaximumSize(new Dimension(200,20));
 		trackerNameField.setText("Enter tracker name");
-		configPanel.add(trackerNameField);
+		configButtonsPanel.add(trackerNameField);
 	
-		this.add(configPanel);
+		this.add(configButtonsPanel);
 		
 		
 		
@@ -128,23 +191,26 @@ public class LifeTrackerConfigPanel extends JPanel {
 	
 	public void addCountTrackerButton(){
 		JButton addCountTracker = new JButton("Add Count Tracker");
-		configPanel.add(addCountTracker);
+		configButtonsPanel.add(addCountTracker);
 		addCountTracker.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean success;
-				Tracker newTracker = new Tracker(trackerNameField.getText(), TrackerEnum.COUNTTRACKER);
+				Tracker newTracker = new Tracker(trackerNameField.getText().trim(), parent.getLoggedInUser(), TrackerEnum.COUNTTRACKER);
 				
 				success = userTrackers.addTracker(newTracker);
 				if ( success) {
 					parent.setStatusText("Successfully added Count Tracker " + trackerNameField.getText());
+					// to do reset field text
 					unsaved = true;
-					saveStatusText.setText("You have unsaved changes");
+					saveStatusText.setText(" -- You have unsaved changes");
+					trackerNameField.setText("Enter tracker name");
 					listCurrentTrackers();
 				}
 				else {
 					parent.setStatusText("Error - A tracker with the name " + trackerNameField.getText() + " already exists");
+					// to do set red
 				}
 				
 			}
@@ -155,23 +221,27 @@ public class LifeTrackerConfigPanel extends JPanel {
 	
 	public void addClickerTrackerButton(){
 		JButton addClickerTracker = new JButton("Add Clicker");
-		configPanel.add(addClickerTracker);
+		configButtonsPanel.add(addClickerTracker);
 		addClickerTracker.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean success;
-				Tracker newTracker = new Tracker(trackerNameField.getText(), TrackerEnum.CLICKER);
+				Tracker newTracker = new Tracker(trackerNameField.getText().trim(), parent.getLoggedInUser(), TrackerEnum.CLICKER);
 				
 				success = userTrackers.addTracker(newTracker);
 				if ( success) {
 					parent.setStatusText("Successfully added Clicker " + trackerNameField.getText());
+					// set color green here 
 					unsaved = true;
-					saveStatusText.setText("You have unsaved changes");
+					// to do reset field text
+					saveStatusText.setText(" -- You have unsaved changes");
+					trackerNameField.setText("Enter tracker name");
 					listCurrentTrackers();
 				}
 				else {
 					parent.setStatusText("Error - A tracker with the name " + trackerNameField.getText() + " already exists");
+					// to do set this red
 				}
 			}
 			
@@ -183,19 +253,21 @@ public class LifeTrackerConfigPanel extends JPanel {
 	
 	public void addActionTrackerButton(){
 		JButton addActionTracker = new JButton("Add Action Tracker");
-		configPanel.add(addActionTracker);
+		configButtonsPanel.add(addActionTracker);
 		addActionTracker.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				boolean success;
-				Tracker newTracker = new Tracker(trackerNameField.getText(), TrackerEnum.ACTIONTRACKER);
+				Tracker newTracker = new Tracker(trackerNameField.getText().trim(), parent.getLoggedInUser(), TrackerEnum.ACTIONTRACKER);
 				
 				success = userTrackers.addTracker(newTracker);
 				if ( success) { 
 					parent.setStatusText("Successfully added Action Tracker " + trackerNameField.getText());
 					unsaved = true;
-					saveStatusText.setText("You have unsaved changes");
+					// to do reset field text
+					saveStatusText.setText(" -- You have unsaved changes");
+					trackerNameField.setText("Enter tracker name");
 					listCurrentTrackers();
 				}
 				else {

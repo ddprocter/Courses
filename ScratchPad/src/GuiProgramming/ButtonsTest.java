@@ -15,6 +15,7 @@ public class ButtonsTest extends JPanel {
 	                public void actionPerformed(java.awt.event.ActionEvent e) {
 	                    System.out.println("Button " + b.getName() + " was pressed");
 	                }
+	                
 	            });
 	            add(b);
 	        }

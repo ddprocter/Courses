@@ -6,6 +6,8 @@ import java.io.File;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
@@ -70,10 +72,22 @@ public class LifeTracker {
 		
 		configPanel = new LifeTrackerConfigPanel(this);
 		tabbedPane.addTab("Configure Trackers", null, configPanel, "Add and Remove Trackers");
-		eventPanel = new LifeTrackerEventPanel(loggedInUser);
+		eventPanel = new LifeTrackerEventPanel(this);
 		tabbedPane.addTab("Log Events", null, eventPanel, "Track Stuff!");
-		reportingPanel = new LifeTrackerReportingPanel(loggedInUser);
+		reportingPanel = new LifeTrackerReportingPanel(this);
 		tabbedPane.addTab("View Reports", null, reportingPanel, "View Reports");
+		
+		tabbedPane.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (e.getSource() instanceof JTabbedPane) {
+                	// to do - prompt to save if I leave config pane without saving
+                	eventPanel.refreshTrackers();
+                	reportingPanel.refreshReports();
+                }
+            }
+        });
 		
 		mainPanel.add(tabbedPane);
 		
