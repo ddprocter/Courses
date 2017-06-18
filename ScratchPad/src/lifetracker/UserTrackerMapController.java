@@ -104,6 +104,8 @@ public class UserTrackerMapController {
 
 	public boolean removeTracker(String trackerName){
 		if ( userTrackerMap.containsKey(trackerName)) {
+			Tracker trackerToRemove = userTrackerMap.get(trackerName);
+			trackerToRemove.deleteDataFile();
 			userTrackerMap.remove(trackerName);
 			return true;
 		} else {

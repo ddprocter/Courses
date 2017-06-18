@@ -18,7 +18,7 @@ public class Tracker implements Serializable {
 	private User user; 
 	private static String filePath = "./userData";
 	private String filename;
-	private File trackerFile;
+	//private File trackerFile;
 	
 	
 	Tracker(String name, User user, TrackerEnum type){
@@ -35,8 +35,9 @@ public class Tracker implements Serializable {
 	public static Report reportByDay(Tracker tracker) {
 		
 		Report report = new Report(tracker);
-		String filename = filePath + "/" + tracker.getUser().getUserLogin() 
-		+ "." + tracker.getName() + ".dat";
+		//String filename = filePath + "/" + tracker.getUser().getUserLogin() 
+		//+ "." + tracker.getName() + ".dat";
+		// believe this is redundant, member variable filename
 		
 		File dataFile = new File(tracker.getFilename());
 		
@@ -46,7 +47,7 @@ public class Tracker implements Serializable {
 		}
 		
 		try {
-			FileReader fr = new FileReader(filename); 
+			FileReader fr = new FileReader(tracker.getFilename()); 
 			BufferedReader bufferedReader = new BufferedReader(fr);
 			StringBuffer stringBuffer = new StringBuffer();
 			String line;
@@ -117,19 +118,19 @@ public class Tracker implements Serializable {
 		this.filename = filename;
 	}
 
-	public File getTrackerFile() {
-		return trackerFile;
-	}
+	//public File getTrackerFile() {
+	//	return trackerFile;
+	//}
 
-	public void setTrackerFile(File trackerFile) {
-		this.trackerFile = trackerFile;
-	}
+	//public void setTrackerFile(File trackerFile) {
+	//	this.trackerFile = trackerFile;
+	//}
 
 	public void track(String amount){
 		
 		String dataString = getCurrentDate()+ "|" +  this.getName() + "|"+ this.getType() + "|" + amount + "\n";
 		
-		trackerFile = new File(filename);
+		File trackerFile = new File(filename);
 		if (! trackerFile.exists()) {
 			try {
 				trackerFile.createNewFile();
@@ -149,9 +150,9 @@ public class Tracker implements Serializable {
 		
 	}
 	
-	public  void setName(String name){
-		this.name = name;
-	};
+	//public  void setName(String name){
+	//	this.name = name;
+	//};
 	
 	public String getName(){
 		return this.name;
@@ -189,6 +190,11 @@ public class Tracker implements Serializable {
 	        cal.set(Calendar.SECOND, 0);
 	        cal.set(Calendar.MILLISECOND, 0);
 	        return cal.getTime();
+	}
+
+	public void deleteDataFile() {
+		// TODO Auto-generated method stub
+		
 	}
 
 
