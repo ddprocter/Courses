@@ -23,6 +23,7 @@ public class UserTrackerMapController {
 		this.filename = filePath + "/" + user.getUserLogin() + ".config";
 		userFile = new File(filename);
 		
+		// fetch the tracker configuration file for user
 		if ( userFile.exists() && userFile.canRead() ) {
 		// if there is already a tracker configuration for this user, fetch it	
 			try {
@@ -37,14 +38,15 @@ public class UserTrackerMapController {
 			
 			
 		} else {
-			userTrackerMap = new LinkedHashMap<String,Tracker>();
 			// otherwise we just create a new blank one
+			userTrackerMap = new LinkedHashMap<String,Tracker>();
+			
 		}
 	
 				
 	}
 	
-	public ArrayList<String> getUserTrackerList(){
+	/*public ArrayList<String> getUserTrackerList(){
 		
 		ArrayList<String> list = new ArrayList<String>();
 		
@@ -58,14 +60,15 @@ public class UserTrackerMapController {
 		return list;
 		
 		
-	}
+	}*/
 	
 	public LinkedHashMap<String, Tracker>  getUserTrackerMap(){
 		return userTrackerMap;
 		
 	}
-		
-	public boolean commit(){
+	
+	
+	public boolean commit(){ 
 		if ( userFile.exists() ) {
 			userFile.delete();
 		}
@@ -76,7 +79,6 @@ public class UserTrackerMapController {
 			fileOut.close();
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}

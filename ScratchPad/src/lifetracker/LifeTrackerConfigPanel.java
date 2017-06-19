@@ -18,6 +18,7 @@ public class LifeTrackerConfigPanel extends JPanel {
 	JTextField trackerNameField; 
 	private boolean unsaved = false;
 	JLabel saveStatusText = new JLabel();
+	JLabel addTrackersStatusText = new JLabel();
 	JPanel configButtonsPanel;
 	JPanel currentTrackersPanel;
 	JPanel trackers;
@@ -29,7 +30,9 @@ public class LifeTrackerConfigPanel extends JPanel {
 		userTrackers = parent.getUserTrackerMapContoller();
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.add(new LeftJustifiedPanelContainer("Add New Trackers"));
+		JPanel addNewTrackersLabelPanel = new LeftJustifiedPanelContainer("Add New Trackers");
+		addNewTrackersLabelPanel.add(addTrackersStatusText);
+		this.add(addNewTrackersLabelPanel);
 		addConfigButtonsPanel();
 		addClickerTrackerButton();
 		addCountTrackerButton();
@@ -72,8 +75,7 @@ public class LifeTrackerConfigPanel extends JPanel {
 		header.add(new JLabel("Actions"));
 		
 		trackers.add(header);
-		
-		int rowcount = 1;
+	
 		
 		LinkedHashMap<String, Tracker> trackersList = userTrackers.getUserTrackerMap();
 		for( Map.Entry<String,Tracker> entry : trackersList.entrySet()){
@@ -157,22 +159,7 @@ public class LifeTrackerConfigPanel extends JPanel {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean success;
-				Tracker newTracker = new Tracker(trackerNameField.getText().trim(), parent.getLoggedInUser(), TrackerEnum.COUNTTRACKER);
-				
-				success = userTrackers.addTracker(newTracker);
-				if ( success) {
-					parent.setStatusText("Successfully added Count Tracker " + trackerNameField.getText());
-					// to do reset field text
-					unsaved = true;
-					saveStatusText.setText(" -- You have unsaved changes");
-					trackerNameField.setText("Enter tracker name");
-					listCurrentTrackers();
-				}
-				else {
-					parent.setStatusText("Error - A tracker with the name " + trackerNameField.getText() + " already exists");
-					// to do set red
-				}
+				createNewTracker(trackerNameField, TrackerEnum.COUNTTRACKER);
 				
 			}
 			
@@ -184,29 +171,11 @@ public class LifeTrackerConfigPanel extends JPanel {
 		JButton addClickerTracker = new JButton("Add Clicker");
 		configButtonsPanel.add(addClickerTracker);
 		addClickerTracker.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean success;
-				Tracker newTracker = new Tracker(trackerNameField.getText().trim(), parent.getLoggedInUser(), TrackerEnum.CLICKER);
+				createNewTracker(trackerNameField, TrackerEnum.CLICKER);
 				
-				success = userTrackers.addTracker(newTracker);
-				if ( success) {
-					parent.setStatusText("Successfully added Clicker " + trackerNameField.getText());
-					// set color green here 
-					unsaved = true;
-					// to do reset field text
-					saveStatusText.setText(" -- You have unsaved changes");
-					trackerNameField.setText("Enter tracker name");
-					listCurrentTrackers();
-				}
-				else {
-					parent.setStatusText("Error - A tracker with the name " + trackerNameField.getText() + " already exists");
-					// to do set this red
-				}
-			}
-			
-			
+			}			
 		});
 		
 		
@@ -216,30 +185,61 @@ public class LifeTrackerConfigPanel extends JPanel {
 		JButton addActionTracker = new JButton("Add Action Tracker");
 		configButtonsPanel.add(addActionTracker);
 		addActionTracker.addActionListener(new ActionListener() {
-
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				boolean success;
-				Tracker newTracker = new Tracker(trackerNameField.getText().trim(), parent.getLoggedInUser(), TrackerEnum.ACTIONTRACKER);
-				
-				success = userTrackers.addTracker(newTracker);
-				if ( success) { 
-					parent.setStatusText("Successfully added Action Tracker " + trackerNameField.getText());
-					unsaved = true;
-					// to do reset field text
-					saveStatusText.setText(" -- You have unsaved changes");
-					trackerNameField.setText("Enter tracker name");
-					listCurrentTrackers();
-				}
-				else {
-					parent.setStatusText("Error - A tracker with the name " + trackerNameField.getText() + " already exists");
-				}
-			}
-			
-			
+				createNewTracker(trackerNameField, TrackerEnum.ACTIONTRACKER);
+			}			
 		});
 		
 		
+	}
+	
+	private boolean trackerNameIsValid(JTextField trackerNameField) {
+		String str = trackerNameField.getText().trim();
+		
+		if ( str.equals("Enter tracker name")) {
+			return false;
+		}
+		
+		if ( str == null || str.equals(" ")) {
+            return false;
+        }
+		
+		if (str.matches("[0-9A-Za-z ]+")) {
+			return true;
+		}
+		return false;
+	}
+	
+	private void createNewTracker(JTextField trackerNameField, TrackerEnum type) {
+
+		if ( ! trackerNameIsValid(trackerNameField ) ){
+			
+			parent.setStatusText("Error - Invalid Tracker Name.");
+			addTrackersStatusText.setText(" -- Error - Invalid Tracker Name - Only letters, numbers and spaces are allowed in Tracker names");
+			// to do set this red
+			trackerNameField.setText("Enter Tracker Name");
+			return;
+		}
+
+		String scrubbedTrackerName = trackerNameField.getText().trim().replaceAll(" +", " ");
+		Tracker newTracker = new Tracker(scrubbedTrackerName, parent.getLoggedInUser(), type);
+	
+		if ( userTrackers.addTracker(newTracker) ) {
+			parent.setStatusText("Successfully added Clicker " + trackerNameField.getText());
+			// set color green here 
+			unsaved = true;
+			// to do reset field text
+			saveStatusText.setText(" -- You have unsaved changes");
+			addTrackersStatusText.setText("");
+			// to do set red
+			trackerNameField.setText("Enter tracker name");
+			listCurrentTrackers();
+		}
+		else {
+			parent.setStatusText("Error - A tracker with the name " + trackerNameField.getText() + " already exists");
+			// to do set this red
+		}
 	}
 	
 	public void addSaveButton(){
@@ -261,6 +261,7 @@ public class LifeTrackerConfigPanel extends JPanel {
 					}
 					else { 
 						saveStatusText.setText( " -- Error saving changes") ;
+						// to do make this red
 					}
 				}
 				else {

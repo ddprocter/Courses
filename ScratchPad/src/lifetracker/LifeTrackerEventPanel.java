@@ -25,6 +25,7 @@ public class LifeTrackerEventPanel extends JPanel {
 		trackersPanel.setLayout(new BoxLayout(trackersPanel, BoxLayout.Y_AXIS));
 		this.add(new LeftJustifiedPanelContainer("Your Trackers - Track Stuff!"));
 		this.add(trackersPanel);
+		parent.setStatusText("");
 		refreshTrackers();
 		
 		
@@ -52,18 +53,30 @@ public class LifeTrackerEventPanel extends JPanel {
 		switch (tracker.getType()) {
 			
 			case COUNTTRACKER:
-				JTextField countField = new JTextField(10);
+				JTextField countField = new JTextField(20);
 				countField.setText("Enter number");
 				// to do validate number
 				JButton countButton = new JButton(tracker.getName());
 				countButton.setName(tracker.getName());
 			    countButton.addActionListener(new ActionListener() {
 			    	public void actionPerformed(ActionEvent e){
-			    		tracker.track(countField.getText());
-			    		rowMessage.setText(countField.getText() + " Events Counted for " + tracker.getName());
-			    		countField.setText("Enter number");
-			    		parent.setStatusText("");
+			    		
+			    		if ( countFieldIsValid(countField) ) {
+			    			tracker.track(countField.getText().trim());
+				    		rowMessage.setText(countField.getText().trim() + " " + tracker.getName() + " counted.");
+				    		countField.setText("Enter number");
+				    		parent.setStatusText("");
+			    			
+			    		} else { 
+			    			rowMessage.setText("Error - must be a valid whole number larger than zero");
+			    			countField.setText("Enter number");
+			    			parent.setStatusText("");
+			    		}
+			    		
+			    		
 			    	}
+
+					
 
 			    });
 				row.add(countField);
@@ -72,20 +85,38 @@ public class LifeTrackerEventPanel extends JPanel {
 				
 				
 			case ACTIONTRACKER:			
-				JTextField actionField = new JTextField(10);
-				actionField.setText("Enter Words to Track");
-				// to do validate text, scrub tabs, scrub symbols
+				JTextField actionField = new JTextField(20);
+				actionField.setText("Actions separted by commas");
+				
 				JButton actionButton = new JButton(tracker.getName());
 				actionButton.setName(tracker.getName());
 			    actionButton.addActionListener(new ActionListener() {
 			    	public void actionPerformed(ActionEvent e){
-			    		tracker.track("{" + actionField.getText() + "}");
-			    		rowMessage.setText(actionField.getText() + " Events Counted for " + tracker.getName());
-			    		actionField.setText("Enter Words to Track");
-			    		parent.setStatusText("");
+			    		
+			    		// to do validate text, scrub tabs, scrub symbols
+			    		if ( actionFieldIsValid(actionField) ){
+			    			String scrubbedActionField = removeIntermediateSpaces(actionField);
+			    			tracker.track("{" + scrubbedActionField + "}");
+				    		rowMessage.setText("The following actions were recorded: " + scrubbedActionField);
+				    		actionField.setText("Actions separted by commas");
+				    		parent.setStatusText("");
+			    		} else {
+			    			rowMessage.setText("Error - please enter actions as words and phrases separted by commas, no symbols.");
+			    			actionField.setText("Actions separted by commas");
+			    			parent.setStatusText("");
+			    		}
+ 			    		
+			    		
 			    		
 			  
 			    	}
+
+					private String removeIntermediateSpaces(JTextField actionField) {
+						String str = actionField.getText().trim();
+						String newStr = str.replaceAll(" +", " ");
+			    		String newStr2 = newStr.replaceAll(" , +| ,+|, +",",");
+						return newStr2;
+					}
 
 
 			    });
@@ -99,13 +130,14 @@ public class LifeTrackerEventPanel extends JPanel {
 			    clickerButton.addActionListener(new ActionListener() {
 			    	public void actionPerformed(ActionEvent e){
 			    		tracker.track("1");
-			    		rowMessage.setText("1 Events Counted for " + tracker.getName());
+			    		rowMessage.setText("1 " + tracker.getName() + " counted.");
 			    		parent.setStatusText("");
 			    	}
 
 
 			    });
-			    row.add(new JLabel("                                "));
+			    // space out for button alignment
+			    row.add(new JLabel("Click here to log events for Clicker:       "));
 			    row.add(clickerButton);
 			    break;
 			
@@ -121,6 +153,39 @@ public class LifeTrackerEventPanel extends JPanel {
 		
 	}
 	
+	private boolean countFieldIsValid(JTextField countField) {
+		String str = countField.getText().trim();
+		
+		if ( str == null || str.equals("0")) {
+            return false;
+        }
+		
+		if (str.matches("[0-9 ]+")) {
+			return true;
+		}
+			
+	    return false;
+		
+	}
+	
+	private boolean actionFieldIsValid(JTextField actionField) {
+		String str = actionField.getText().trim();
+		
+		if ( str.equals("Actions separted by commas")) {
+			return false;
+		}
+		
+		if ( str == null || str.equals(" ")) {
+            return false;
+        }
+		
+		if (str.matches("[A-Za-z, ]+")) {
+			return true;
+		}
+		return false;
+		
+		
+	}
 	
 	
 	

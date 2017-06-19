@@ -40,9 +40,9 @@ public class Report {
 		return tracker;
 	}
 
-	public void setTracker(Tracker tracker) {
-		this.tracker = tracker;
-	}
+	//public void setTracker(Tracker tracker) {
+	//	this.tracker = tracker;
+	//} // there should be no need to set a tracker
 
 	public LinkedHashMap<Date, Integer> getReportCountData() {
 		return reportCountData;
@@ -88,6 +88,11 @@ public class Report {
 
 	public class TokenCountsByDate<Date, Integer> extends LinkedHashMap<Date,Integer> {
 	
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		private TokenCountsByDate(){
 			
 		}

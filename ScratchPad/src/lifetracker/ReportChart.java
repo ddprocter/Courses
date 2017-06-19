@@ -47,11 +47,11 @@ public class ReportChart extends JPanel {
 		if (report.getStatus() == ReportStatusEnum.OK){
 			
 			ChartPanel chartPanel = (ChartPanel) createChartPanel(report);
-			chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+			//chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
+			chartPanel.setMaximumSize(new java.awt.Dimension(500, 270));
 			this.add(chartPanel);
 		} else { 
-			JLabel noDataLabel = new JLabel("No data for tracker " + report.getName());
-			this.add(noDataLabel);
+			this.add(new LeftJustifiedPanelContainer("No data for tracker " + report.getName()));
 		}
     }
 	

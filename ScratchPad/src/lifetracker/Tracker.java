@@ -28,6 +28,7 @@ public class Tracker implements Serializable {
 		this.user = user;
 		this.filename = filePath + "/" + user.getUserLogin() 
 		+ "." + this.name + ".dat";
+		// to do replace single space with _
 		
 		
 	}
@@ -71,8 +72,9 @@ public class Tracker implements Serializable {
 				
 				
 				if( tracker.getType() == TrackerEnum.ACTIONTRACKER) {
-					String tokens = data[3];
-					String[] tokenData = tokens.split("\\s");
+					String tokens = data[3].replaceAll("\\{|\\}", "");
+					//String[] tokenData = tokens.replaceAll("^{", "").replaceAll("}$", "").split(",");
+					String[] tokenData = tokens.split(",");
 					
 					for (String t:tokenData){
 						report.addTokenByDayCount(t, date, 1);
@@ -152,7 +154,7 @@ public class Tracker implements Serializable {
 	
 	//public  void setName(String name){
 	//	this.name = name;
-	//};
+	//}; there should be no need to set a name
 	
 	public String getName(){
 		return this.name;
@@ -161,7 +163,7 @@ public class Tracker implements Serializable {
 	
 	//public  void setType(TrackerEnum type){
 	//	this.type = type;
-	//};
+	//}; there should be no need to set a type
 	
 	public TrackerEnum getType(){
 		return this.type;
@@ -171,9 +173,9 @@ public class Tracker implements Serializable {
 		return user;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
-	}
+	//public void setUser(User user) {
+	//	this.user = user;
+	//} there should be no need to set user
 	
 	
 	private String getCurrentDate() {
