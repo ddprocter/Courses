@@ -36,9 +36,6 @@ public class Tracker implements Serializable {
 	public static Report reportByDay(Tracker tracker) {
 		
 		Report report = new Report(tracker);
-		//String filename = filePath + "/" + tracker.getUser().getUserLogin() 
-		//+ "." + tracker.getName() + ".dat";
-		// believe this is redundant, member variable filename
 		
 		File dataFile = new File(tracker.getFilename());
 		
@@ -73,7 +70,6 @@ public class Tracker implements Serializable {
 				
 				if( tracker.getType() == TrackerEnum.ACTIONTRACKER) {
 					String tokens = data[3].replaceAll("\\{|\\}", "");
-					//String[] tokenData = tokens.replaceAll("^{", "").replaceAll("}$", "").split(",");
 					String[] tokenData = tokens.split(",");
 					
 					for (String t:tokenData){
@@ -120,14 +116,6 @@ public class Tracker implements Serializable {
 		this.filename = filename;
 	}
 
-	//public File getTrackerFile() {
-	//	return trackerFile;
-	//}
-
-	//public void setTrackerFile(File trackerFile) {
-	//	this.trackerFile = trackerFile;
-	//}
-
 	public void track(String amount){
 		
 		String dataString = getCurrentDate()+ "|" +  this.getName() + "|"+ this.getType() + "|" + amount + "\n";
@@ -152,18 +140,13 @@ public class Tracker implements Serializable {
 		
 	}
 	
-	//public  void setName(String name){
-	//	this.name = name;
-	//}; there should be no need to set a name
+	
 	
 	public String getName(){
 		return this.name;
 		
 	}
 	
-	//public  void setType(TrackerEnum type){
-	//	this.type = type;
-	//}; there should be no need to set a type
 	
 	public TrackerEnum getType(){
 		return this.type;
@@ -173,11 +156,6 @@ public class Tracker implements Serializable {
 		return user;
 	}
 
-	//public void setUser(User user) {
-	//	this.user = user;
-	//} there should be no need to set user
-	
-	
 	private String getCurrentDate() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd:HH:mm:ss");
 		Date date = new Date();
