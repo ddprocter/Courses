@@ -85,6 +85,7 @@ public class LifeTracker {
                 	// to do - prompt to save if I leave config pane without saving
                 	eventPanel.refreshTrackers();
                 	reportingPanel.refreshReports();
+                	setStatusText("");
                 }
             }
         });

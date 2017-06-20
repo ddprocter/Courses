@@ -59,7 +59,7 @@ public class LifeTrackerLoginPanel extends JPanel {
 		else if (passwordField.getPassword() == null)
 			errorLabel.setText("Error: Please enter a password");
 		else 
-			success = user.login(userField.getText(), passwordField.getPassword());
+			success = user.login(userField.getText().trim(), passwordField.getPassword());
 		
 		if (success == true) {
 			parent.setLoggedInUser(user);			

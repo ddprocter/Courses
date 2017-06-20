@@ -43,7 +43,7 @@ public class LifeTrackerReportingPanel extends JPanel {
 	
 
 	private void renderChart(Report report) {
-		ReportChart chart = new ReportChart(report);
+		ReportChartPanel chart = new ReportChartPanel(report);
 		
 		this.add(chart);
 		

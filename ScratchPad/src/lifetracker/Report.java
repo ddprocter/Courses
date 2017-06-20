@@ -40,9 +40,6 @@ public class Report {
 		return tracker;
 	}
 
-	//public void setTracker(Tracker tracker) {
-	//	this.tracker = tracker;
-	//} // there should be no need to set a tracker
 
 	public LinkedHashMap<Date, Integer> getReportCountData() {
 		return reportCountData;
@@ -64,6 +61,7 @@ public class Report {
 			// if not, add the date
 			reportCountData.put(date, count);
 		}
+		// report has at least one good metric, report ok
 		this.setStatus(ReportStatusEnum.OK);
 	}
 	
@@ -81,6 +79,7 @@ public class Report {
 			tokenCountsByDate.put(date, count);
 			reportTokenData.put(token, tokenCountsByDate);
 		}
+		// report has at least one good metric, report ok
 		this.setStatus(ReportStatusEnum.OK);
 		
 	}

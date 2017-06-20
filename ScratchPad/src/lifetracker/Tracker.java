@@ -60,6 +60,7 @@ public class Tracker implements Serializable {
 				
 				// verify tracker name as expected
 				if (! data[1].equals(tracker.getName())){
+					// at least one row in file is corrupted, flag report as error
 					report.setStatus(ReportStatusEnum.ERROR);
 					return report;
 				}
@@ -116,9 +117,13 @@ public class Tracker implements Serializable {
 		this.filename = filename;
 	}
 
-	public void track(String amount){
+	public void track(String stuffToTrack){
 		
-		String dataString = getCurrentDate()+ "|" +  this.getName() + "|"+ this.getType() + "|" + amount + "\n";
+		if (this.getType() == TrackerEnum.ACTIONTRACKER) {
+			stuffToTrack = stuffToTrack.toLowerCase();
+		}	
+		
+		String dataString = getCurrentDate()+ "|" +  this.getName() + "|"+ this.getType() + "|" + stuffToTrack + "\n";
 		
 		File trackerFile = new File(filename);
 		if (! trackerFile.exists()) {

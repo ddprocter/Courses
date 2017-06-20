@@ -46,21 +46,7 @@ public class UserTrackerMapController {
 				
 	}
 	
-	/*public ArrayList<String> getUserTrackerList(){
-		
-		ArrayList<String> list = new ArrayList<String>();
-		
-		for( Map.Entry<String,Tracker> entry : userTrackerMap.entrySet()){
-			  String key = entry.getKey();
-			  String value = entry.getValue().getType().getType();
-			  
-			  list.add("Name: " + key + " Type: " + value);
-			 
-		}
-		return list;
-		
-		
-	}*/
+	
 	
 	public LinkedHashMap<String, Tracker>  getUserTrackerMap(){
 		return userTrackerMap;

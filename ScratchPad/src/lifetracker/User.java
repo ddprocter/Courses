@@ -31,10 +31,18 @@ public class User implements Serializable {
 		if (userLogin.equals("d") && passwordString.equals("p")) {
 			this.isLoggedIn = true;
 			return true;
-		} else {
-			return false;
+		}
+		if (userLogin.equals("r") && passwordString.equals("g")) {
+			this.isLoggedIn = true;
+			return true;
+		}
+		if (userLogin.equals("demo") && passwordString.equals("demo")) {
+			this.isLoggedIn = true;
+			return true;
 		}
 		
+		return false;
+	
 	}
 
 }

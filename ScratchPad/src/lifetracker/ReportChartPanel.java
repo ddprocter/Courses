@@ -28,7 +28,7 @@ import org.jfree.ui.RectangleInsets;
 
 import lifetracker.Report.TokenCountsByDate;
 
-public class ReportChart extends JPanel {
+public class ReportChartPanel extends JPanel {
 	
 	private Report report;
 	
@@ -39,7 +39,7 @@ public class ReportChart extends JPanel {
                 true));
     }
 	
-	public ReportChart(Report report) {
+	public ReportChartPanel(Report report) {
         
 		this.report = report;
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -50,9 +50,12 @@ public class ReportChart extends JPanel {
 			//chartPanel.setPreferredSize(new java.awt.Dimension(500, 270));
 			chartPanel.setMaximumSize(new java.awt.Dimension(500, 270));
 			this.add(chartPanel);
-		} else { 
+		} else if (report.getStatus() == ReportStatusEnum.NODATA) { 
 			this.add(new LeftJustifiedPanelContainer("No data for tracker " + report.getName()));
+		} else if (report.getStatus() == ReportStatusEnum.ERROR) {
+			this.add(new JLabel("Error - problem with report data for " + report.getName()));
 		}
+		
     }
 	
 	 private static JFreeChart createChart(Report report, XYDataset dataset) {
@@ -101,7 +104,7 @@ public class ReportChart extends JPanel {
 	     * @return The dataset.
 	     */
 	    private static XYDataset createCountDataset(Report report) {
-
+	    	// TimeSeries is the JFree collection for data
 	        TimeSeries ts = new TimeSeries(report.getName());
 	        
 	        LinkedHashMap<Date, Integer> data = report.getReportCountData(); 
@@ -109,13 +112,15 @@ public class ReportChart extends JPanel {
 	        for (Map.Entry<Date, Integer> entry : data.entrySet()) {
 	        	
 	        	Date date = entry.getKey();
+	        	// need to extract d/m/year from date to set on JFree Day function
+	        	// Date methods for this are deprecated
 	        	Calendar cal = Calendar.getInstance();
 	            cal.setTime(date);
 	            Integer day = cal.get(Calendar.DAY_OF_MONTH);
 	            Integer month = cal.get(Calendar.MONTH);
 	            Integer year = cal.get(Calendar.YEAR);
-	    
-	        	ts.add(new Day(day, month, year), entry.getValue());
+	            // In Calendar class, Jan = 0, so we must add 1 to month here
+	        	ts.add(new Day(day, month+1, year), entry.getValue());
 			}
 	         	
 	       	        		
@@ -129,7 +134,8 @@ public class ReportChart extends JPanel {
 	    private static XYDataset createTokenCountDataset(Report report) {
 
 	        
-	        TreeMap<String, TokenCountsByDate<Date,Integer>> data = report.getReportTokenData(); 
+	        TreeMap<String, TokenCountsByDate<Date,Integer>> data = report.getReportTokenData();
+	        // TimeSeries is the JFree collection for data
 	        TimeSeriesCollection dataset = new TimeSeriesCollection();
 	        
 	        for (Map.Entry<String, TokenCountsByDate<Date,Integer>> tokenStringEntry : data.entrySet()) {
@@ -141,12 +147,15 @@ public class ReportChart extends JPanel {
 	        	TimeSeries ts = new TimeSeries(token);
 	        	TokenCountsByDate<Date,Integer> tokenCountsByDate = tokenStringEntry.getValue();
 	        		for (Map.Entry<Date, Integer> dateEntry : tokenCountsByDate.entrySet() ) {
+	        			// need to extract d/m/year from date to set on JFree Day function
+	    	        	// Date methods for this are deprecated
 	        			Calendar cal = Calendar.getInstance();
 	    	            cal.setTime(dateEntry.getKey());
 	    	            Integer day = cal.get(Calendar.DAY_OF_MONTH);
 	    	            Integer month = cal.get(Calendar.MONTH);
 	    	            Integer year = cal.get(Calendar.YEAR);
-	    	            ts.add(new Day(day, month, year), dateEntry.getValue());
+	    	            // In Calendar class, Jan = 0, so we must add 1 to month here
+	    	            ts.add(new Day(day, month+1, year), dateEntry.getValue());
 	        		}
 	        	
 	        	
@@ -161,11 +170,13 @@ public class ReportChart extends JPanel {
 	    
 	    
 	    /**
-	     * Blah Blah
+	     * creatChartPanel
+	     * 
+	     * Creates the panel for the chart, creates the JFree data sets from report object
 	     *
-	     * @return A panel.
+	     * @return A panel 
 	     */
-	    public static JPanel createChartPanel(Report report) {
+	    private static JPanel createChartPanel(Report report) {
 	    	JFreeChart chart;
 	    	if (report.getTrackerType() == TrackerEnum.ACTIONTRACKER){
 	    		chart = createChart(report, createTokenCountDataset(report));
