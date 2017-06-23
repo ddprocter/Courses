@@ -12,7 +12,7 @@ import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
 
-public class LifeTracker {
+public class LifeTracker { 
 	
 	public JFrame mainWindow, loginWindow;
 	private JTabbedPane tabbedPane;
